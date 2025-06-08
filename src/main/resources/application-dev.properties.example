@@ -1,0 +1,15 @@
+spring.datasource.url=jdbc:postgresql://localhost:5432/playground
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+jwt.secret=
+jwt.expiration=
+logging.level.root=info
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.tagSorter=alpha
+springdoc.swagger-ui.operationSorter=alpha
+springdoc.show-actuator=true

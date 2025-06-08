@@ -1,0 +1,3 @@
+spring.application.name=roomy
+server.servlet.context-path=/api
+spring.profiles.active=
