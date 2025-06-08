@@ -37,7 +37,7 @@ public class RoomController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ROOM_MASTER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<RoomDTO>> createRoom(
             @RequestBody UpsertRoomRequestDTO dto
     ) {
@@ -53,7 +53,7 @@ public class RoomController {
     }
 
     @PatchMapping(value = "/{roomId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ROOM_MASTER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<RoomDTO>> updateRoom(
             @PathVariable("roomId") Long roomId,
             @RequestBody UpsertRoomRequestDTO dto
@@ -70,7 +70,7 @@ public class RoomController {
     }
 
     @DeleteMapping(value = "/{roomId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO<Object>> deleteRoom(@PathVariable("roomId") Long roomId) {
         roomService.deleteRoom(roomId);
 

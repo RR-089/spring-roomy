@@ -19,7 +19,7 @@ public class RoomMemberController {
     private final RoomMemberService roomMemberService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ROOM_MASTER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<Object>> bulkAddRoomMembers(
             @PathVariable("roomId") Long roomId,
             @RequestBody AddRemoveRoomMembersDTO dto
@@ -36,7 +36,7 @@ public class RoomMemberController {
     }
 
     @PatchMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ROOM_MASTER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<Object>> bulkRemoveRoomMembers(
             @PathVariable("roomId") Long roomId,
             @RequestBody AddRemoveRoomMembersDTO dto

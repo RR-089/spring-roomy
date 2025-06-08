@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProtectedController {
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
-    //@PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<?> helloWorldProtected() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 

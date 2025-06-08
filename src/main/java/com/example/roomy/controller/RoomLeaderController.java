@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/rooms/{roomId}/leaders")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
-@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ROOM_MASTER')")
+@PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
 public class RoomLeaderController {
     private final RoomLeaderService roomLeaderService;
 
