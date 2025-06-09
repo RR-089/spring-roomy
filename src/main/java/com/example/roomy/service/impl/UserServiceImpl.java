@@ -83,30 +83,15 @@ public class UserServiceImpl implements UserService {
         List<OptionDTO<String>> roles = new ArrayList<>();
 
         for (User user : users) {
-            if (dto.getIds()) {
-                ids.add(
-                        OptionDTO.<Long>builder()
-                                 .label(user.getId().toString())
-                                 .value(user.getId())
-                                 .build()
-                );
+            if (dto.isIds()) {
+                ids.add(OptionDTO.buildOption(user.getUsername(), user.getId()));
             }
-            if (dto.getUsernames()) {
-                usernames.add(
-                        OptionDTO.<String>builder()
-                                 .label(user.getUsername())
-                                 .value(user.getUsername())
-                                 .build()
-                );
+            if (dto.isUsernames()) {
+                usernames.add(OptionDTO.buildOption(user.getUsername(), user.getUsername()));
             }
-            if (dto.getRoles()) {
+            if (dto.isRoles()) {
                 for (Role role : user.getRoles()) {
-                    roles.add(
-                            OptionDTO.<String>builder()
-                                     .label(role.getName())
-                                     .value(role.getName())
-                                     .build()
-                    );
+                    roles.add(OptionDTO.buildOption(role.getName(), role.getName()));
                 }
             }
         }
@@ -114,7 +99,7 @@ public class UserServiceImpl implements UserService {
         return GetUsersOptionsResponseDTO.builder()
                                          .ids(ids)
                                          .usernames(usernames)
-                                         .roles(roles)
+                                         .roles(roles.stream().distinct().toList())
                                          .build();
     }
 

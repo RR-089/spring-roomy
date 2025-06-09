@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class GetUsersOptionsRequestDTO {
-    private Boolean ids = false;
+    private boolean ids = false;
 
-    private Boolean usernames = false;
+    private boolean usernames = false;
 
-    private Boolean roles = false;
+    private boolean roles = false;
 }

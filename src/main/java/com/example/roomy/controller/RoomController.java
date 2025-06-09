@@ -2,9 +2,7 @@ package com.example.roomy.controller;
 
 import com.example.roomy.dto.common.PaginationDTO;
 import com.example.roomy.dto.common.ResponseDTO;
-import com.example.roomy.dto.room.GetRoomsRequestDTO;
-import com.example.roomy.dto.room.RoomDTO;
-import com.example.roomy.dto.room.UpsertRoomRequestDTO;
+import com.example.roomy.dto.room.*;
 import com.example.roomy.service.RoomService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +29,19 @@ public class RoomController {
                 ResponseDTO.<PaginationDTO<List<RoomDTO>>>builder()
                            .status(HttpStatus.OK.value())
                            .message("Get rooms successful")
+                           .data(data)
+                           .build()
+        );
+    }
+
+    @GetMapping(value = "/options")
+    public ResponseEntity<ResponseDTO<GetRoomsOptionsResponseDTO>> getRoomsOptions(GetRoomsOptionsRequestDTO dto) {
+        GetRoomsOptionsResponseDTO data = roomService.findRoomsOptions(dto);
+
+        return ResponseEntity.ok(
+                ResponseDTO.<GetRoomsOptionsResponseDTO>builder()
+                           .status(HttpStatus.OK.value())
+                           .message("Get rooms options successful")
                            .data(data)
                            .build()
         );

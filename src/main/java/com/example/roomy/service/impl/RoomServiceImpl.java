@@ -1,13 +1,13 @@
 package com.example.roomy.service.impl;
 
+import com.example.roomy.dto.common.OptionDTO;
 import com.example.roomy.dto.common.PaginationDTO;
-import com.example.roomy.dto.room.GetRoomsRequestDTO;
-import com.example.roomy.dto.room.RoomDTO;
-import com.example.roomy.dto.room.UpsertRoomRequestDTO;
+import com.example.roomy.dto.room.*;
 import com.example.roomy.enums.RoomStatus;
 import com.example.roomy.exception.BadRequestException;
 import com.example.roomy.exception.NotFoundException;
 import com.example.roomy.model.Room;
+import com.example.roomy.model.User;
 import com.example.roomy.repository.RoomRepository;
 import com.example.roomy.service.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,6 +73,51 @@ public class RoomServiceImpl implements RoomService {
                             .data(roomDTOS)
                             .build();
 
+    }
+
+    @Override
+    public GetRoomsOptionsResponseDTO findRoomsOptions(GetRoomsOptionsRequestDTO dto) {
+        List<Room> rooms = roomRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+
+        List<OptionDTO<Long>> ids = new ArrayList<>();
+        List<OptionDTO<String>> names = new ArrayList<>();
+        List<OptionDTO<String>> statuses = new ArrayList<>();
+        List<OptionDTO<Long>> roomMasterIds = new ArrayList<>();
+        List<OptionDTO<Long>> roomMemberIds = new ArrayList<>();
+
+        for (Room room : rooms) {
+            if (dto.isIds()) {
+                ids.add(OptionDTO.buildOption(room.getName(), room.getId()));
+            }
+
+            if (dto.isNames()) {
+                names.add(OptionDTO.buildOption(room.getName(), room.getName()));
+            }
+
+            if (dto.isStatuses()) {
+                statuses.add(OptionDTO.buildOption(room.getStatus().toString(),
+                        room.getStatus().toString()));
+            }
+
+            if (dto.isRoomMasterIds() && room.getRoomMaster() != null) {
+                roomMasterIds.add(OptionDTO.buildOption(room.getRoomMaster().getUsername(), room.getRoomMaster().getId()));
+            }
+
+            if (dto.isRoomMemberIds()) {
+                for (User user : room.getRoomMembers()) {
+                    roomMemberIds.add(OptionDTO.buildOption(user.getUsername(),
+                            user.getId()));
+                }
+            }
+        }
+
+        return GetRoomsOptionsResponseDTO.builder()
+                                         .ids(ids)
+                                         .names(names)
+                                         .statuses(statuses.stream().distinct().toList())
+                                         .roomMasterIds(roomMasterIds)
+                                         .roomMemberIds(roomMemberIds)
+                                         .build();
     }
 
     @Override
