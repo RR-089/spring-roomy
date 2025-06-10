@@ -35,7 +35,7 @@ public class RoomMemberController {
                              );
     }
 
-    @PatchMapping
+    @DeleteMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<Object>> bulkRemoveRoomMembers(
             @PathVariable("roomId") Long roomId,
