@@ -5,6 +5,7 @@ import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.dto.room.AddRemoveRoomMembersDTO;
 import com.example.roomy.service.RoomMemberService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class RoomMemberController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<Object>> bulkAddRoomMembers(
             @PathVariable("roomId") Long roomId,
-            @RequestBody AddRemoveRoomMembersDTO dto
+            @Valid @RequestBody AddRemoveRoomMembersDTO dto
     ) {
         roomMemberService.bulkAddRoomMembers(roomId, dto.getUserIds());
 
@@ -39,7 +40,7 @@ public class RoomMemberController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<Object>> bulkRemoveRoomMembers(
             @PathVariable("roomId") Long roomId,
-            @RequestBody AddRemoveRoomMembersDTO dto
+            @Valid @RequestBody AddRemoveRoomMembersDTO dto
     ) {
         roomMemberService.bulkRemoveRoomMembers(roomId, dto.getUserIds());
 

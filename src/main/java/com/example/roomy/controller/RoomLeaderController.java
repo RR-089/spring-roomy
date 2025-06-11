@@ -5,6 +5,7 @@ import com.example.roomy.dto.room.AddReplaceRoomLeaderDTO;
 import com.example.roomy.dto.room.RoomDTO;
 import com.example.roomy.service.RoomLeaderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class RoomLeaderController {
     @PostMapping
     public ResponseEntity<ResponseDTO<RoomDTO>> addRoomLeader(
             @PathVariable("roomId") Long roomId,
-            @RequestBody AddReplaceRoomLeaderDTO dto
+            @Valid @RequestBody AddReplaceRoomLeaderDTO dto
     ) {
         RoomDTO data = roomLeaderService.addRoomLeader(roomId, dto.getUserId());
 
@@ -42,7 +43,7 @@ public class RoomLeaderController {
     @PatchMapping
     public ResponseEntity<ResponseDTO<RoomDTO>> replaceRoomLeader(
             @PathVariable("roomId") Long roomId,
-            @RequestBody AddReplaceRoomLeaderDTO dto
+            @Valid @RequestBody AddReplaceRoomLeaderDTO dto
     ) {
         RoomDTO data = roomLeaderService.replaceRoomLeader(roomId, dto.getUserId());
 

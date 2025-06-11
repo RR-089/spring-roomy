@@ -4,6 +4,7 @@ import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.dto.userrole.AddUserRoleRequestDTO;
 import com.example.roomy.service.UserRoleService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class UserRoleController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO<Object>> addUserRole(@PathVariable("userId") Long userId,
-                                                           @RequestBody AddUserRoleRequestDTO dto
+                                                           @Valid @RequestBody AddUserRoleRequestDTO dto
     ) {
         userRoleService.addUserRole(userId, dto.getName());
 

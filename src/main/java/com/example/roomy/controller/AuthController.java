@@ -5,6 +5,7 @@ import com.example.roomy.dto.auth.RegisterRequestDTO;
 import com.example.roomy.dto.auth.TokenResponseDTO;
 import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class AuthController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<ResponseDTO<TokenResponseDTO>> login(
-            @RequestBody LoginRequestDTO loginRequestDTO
+            @Valid @RequestBody LoginRequestDTO loginRequestDTO
     ) {
         TokenResponseDTO token = authService.login(loginRequestDTO);
 
@@ -36,7 +37,7 @@ public class AuthController {
 
     @PostMapping(value = "register")
     public ResponseEntity<ResponseDTO<TokenResponseDTO>> register(
-            @RequestBody RegisterRequestDTO registerRequestDTO
+            @Valid @RequestBody RegisterRequestDTO registerRequestDTO
     ) {
         TokenResponseDTO token = authService.register(registerRequestDTO);
 

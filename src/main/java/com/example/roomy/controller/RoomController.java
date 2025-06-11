@@ -5,6 +5,7 @@ import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.dto.room.*;
 import com.example.roomy.service.RoomService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,7 @@ public class RoomController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<RoomDTO>> createRoom(
-            @RequestBody UpsertRoomRequestDTO dto
+            @Valid @RequestBody UpsertRoomRequestDTO dto
     ) {
         RoomDTO data = roomService.upsertRoom(0L, dto);
 
@@ -67,7 +68,7 @@ public class RoomController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<RoomDTO>> updateRoom(
             @PathVariable("roomId") Long roomId,
-            @RequestBody UpsertRoomRequestDTO dto
+            @Valid @RequestBody UpsertRoomRequestDTO dto
     ) {
         RoomDTO data = roomService.upsertRoom(roomId, dto);
 

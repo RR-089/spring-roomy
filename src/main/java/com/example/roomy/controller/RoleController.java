@@ -5,6 +5,7 @@ import com.example.roomy.dto.role.CreateRoleRequestDTO;
 import com.example.roomy.model.Role;
 import com.example.roomy.service.RoleService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class RoleController {
     private final RoleService roleService;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<Role>> createRole(@RequestBody CreateRoleRequestDTO dto) {
+    public ResponseEntity<ResponseDTO<Role>> createRole(@Valid @RequestBody CreateRoleRequestDTO dto) {
         Role data = roleService.createRole(dto.getName());
 
         HttpStatus status = HttpStatus.CREATED;
