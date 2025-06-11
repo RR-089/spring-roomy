@@ -42,9 +42,22 @@ public class RoomServiceImpl implements RoomService {
                         room.getRoomMembers() != null ?
                                 room.getRoomMembers()
                                     .stream()
-                                    .map(UserServiceImpl::mapToDTO)
+                                    .map(UserServiceImpl::mapToInfoDTO)
                                     .collect(Collectors.toSet()) : new HashSet<>())
                       .build();
+    }
+
+    public static RoomInfoDTO mapToInfoDTO(Room room) {
+        return RoomInfoDTO.builder()
+                          .id(room.getId())
+                          .name(room.getName())
+                          .status(room.getStatus().toString())
+                          .roomMaster(
+                                  room.getRoomMaster() != null ?
+                                          UserServiceImpl.mapToDTO(room.getRoomMaster())
+                                          : null
+                          )
+                          .build();
     }
 
 

@@ -24,6 +24,7 @@ public class Room extends AbstractTimestamp {
     private Long id;
 
     @Column(name = "name", unique = true, nullable = false)
+    @EqualsAndHashCode.Include
     private String name;
 
     @Convert(converter = RoomStatusConverter.class)

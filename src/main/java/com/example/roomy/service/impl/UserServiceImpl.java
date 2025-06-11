@@ -4,10 +4,7 @@ import com.example.roomy.dto.auth.LoginRequestDTO;
 import com.example.roomy.dto.auth.RegisterRequestDTO;
 import com.example.roomy.dto.common.OptionDTO;
 import com.example.roomy.dto.common.PaginationDTO;
-import com.example.roomy.dto.user.GetUsersOptionsRequestDTO;
-import com.example.roomy.dto.user.GetUsersOptionsResponseDTO;
-import com.example.roomy.dto.user.GetUsersRequestDTO;
-import com.example.roomy.dto.user.UserDTO;
+import com.example.roomy.dto.user.*;
 import com.example.roomy.exception.BadRequestException;
 import com.example.roomy.exception.NotFoundException;
 import com.example.roomy.model.Role;
@@ -46,6 +43,13 @@ public class UserServiceImpl implements UserService {
                                     .map(Role::getName).
                                     collect(Collectors.toSet()) : null)
                       .build();
+    }
+
+    public static UserInfoDTO mapToInfoDTO(User user) {
+        return UserInfoDTO.builder()
+                          .id(user.getId())
+                          .username(user.getUsername())
+                          .build();
     }
 
     @Override

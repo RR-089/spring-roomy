@@ -44,6 +44,10 @@ public class User extends AbstractTimestamp {
     @JsonIgnoreProperties("roomMembers")
     private Set<Room> rooms = new HashSet<>();
 
+    @ManyToMany(mappedBy = "assignees")
+    //@JsonIgnoreProperties("tasks")
+    @JsonIgnoreProperties("assignees")
+    private Set<Task> tasks = new HashSet<>();
 
     public void addRole(Role role) {
         roles.add(role);
