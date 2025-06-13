@@ -13,3 +13,4 @@ springdoc.api-docs.path=/api-docs
 springdoc.swagger-ui.tagSorter=alpha
 springdoc.swagger-ui.operationSorter=alpha
 springdoc.show-actuator=true
+cors.allowedOriginPattern=
