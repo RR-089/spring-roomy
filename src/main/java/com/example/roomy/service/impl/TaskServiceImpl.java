@@ -1,9 +1,8 @@
 package com.example.roomy.service.impl;
 
+import com.example.roomy.dto.common.OptionDTO;
 import com.example.roomy.dto.common.PaginationDTO;
-import com.example.roomy.dto.task.CreateTaskDTO;
-import com.example.roomy.dto.task.GetAllTasksRequestDTO;
-import com.example.roomy.dto.task.TaskDTO;
+import com.example.roomy.dto.task.*;
 import com.example.roomy.enums.TaskStatus;
 import com.example.roomy.exception.BadRequestException;
 import com.example.roomy.exception.NotFoundException;
@@ -14,21 +13,22 @@ import com.example.roomy.repository.TaskRepository;
 import com.example.roomy.service.RoomService;
 import com.example.roomy.service.TaskService;
 import com.example.roomy.service.UserService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class TaskServiceImpl implements TaskService {
+    private final EntityManager entityManager;
     private final TaskRepository taskRepository;
     private final RoomService roomService;
     private final UserService userService;
@@ -50,6 +50,7 @@ public class TaskServiceImpl implements TaskService {
                                      .collect(Collectors.toSet()))
                       .build();
     }
+
 
     @Override
     public PaginationDTO<List<TaskDTO>> getAllTask(GetAllTasksRequestDTO dto, Pageable pageable) {
@@ -85,6 +86,72 @@ public class TaskServiceImpl implements TaskService {
                             .totalPages(taskPage.getTotalPages())
                             .data(taskDTOS)
                             .build();
+    }
+
+    @Override
+    public GetTasksOptionsResponseDTO getTasksOptions(GetTasksOptionsRequestDTO dto) {
+        StringBuilder sb = new StringBuilder("select ");
+        Map<String, String> fieldToAlias = getFieldToAlias(dto);
+
+        List<String> fields = new ArrayList<>(fieldToAlias.keySet());
+        sb.append(String.join(", ", fields));
+        sb.append(" from Task t");
+
+        if (dto.isRoomIds()) {
+            sb.append(" join t.room r");
+        }
+        if (dto.isAssigneeIds()) {
+            sb.append(" left join t.assignees a");
+        }
+
+        Query query = entityManager.createQuery(sb.toString());
+        List<?> results = query.getResultList();
+
+        Set<OptionDTO<Long>> ids = new LinkedHashSet<>();
+        Set<OptionDTO<Long>> roomIds = new LinkedHashSet<>();
+        Set<OptionDTO<Long>> assigneeIds = new LinkedHashSet<>();
+        Set<OptionDTO<String>> statuses = new LinkedHashSet<>();
+
+        for (Object result : results) {
+            Object[] row = fieldToAlias.size() == 1 ? new Object[]{result} : (Object[]) result;
+
+            Long taskId = null, roomId = null, assigneeId = null;
+            String taskName = null, roomName = null, assigneeName = null;
+
+            int index = 0;
+            for (String alias : fieldToAlias.values()) {
+                Object value = row[index++];
+                switch (alias) {
+                    case "id" -> taskId = (Long) value;
+                    case "taskName" -> taskName = (String) value;
+                    case "roomId" -> roomId = (Long) value;
+                    case "roomName" -> roomName = (String) value;
+                    case "assigneeId" -> assigneeId = (Long) value;
+                    case "assigneeName" -> assigneeName = (String) value;
+                    case "status" ->
+                            statuses.add(OptionDTO.buildOption(String.valueOf(value), String.valueOf(value)));
+                }
+            }
+
+            if (taskId != null && taskName != null) {
+                ids.add(OptionDTO.buildOption(taskName, taskId));
+            }
+
+            if (roomId != null && roomName != null) {
+                roomIds.add(OptionDTO.buildOption(roomName, roomId));
+            }
+
+            if (assigneeId != null && assigneeName != null) {
+                assigneeIds.add(OptionDTO.buildOption(assigneeName, assigneeId));
+            }
+        }
+
+        return GetTasksOptionsResponseDTO.builder()
+                                         .ids(dto.isIds() ? new ArrayList<>(ids) : null)
+                                         .roomIds(dto.isRoomIds() ? new ArrayList<>(roomIds) : null)
+                                         .assigneeIds(dto.isAssigneeIds() ? new ArrayList<>(assigneeIds) : null)
+                                         .statuses(dto.isStatuses() ? new ArrayList<>(statuses) : null)
+                                         .build();
     }
 
     @Override
@@ -127,5 +194,31 @@ public class TaskServiceImpl implements TaskService {
         }
 
         taskRepository.delete(foundTask);
+    }
+
+    private Map<String, String> getFieldToAlias(GetTasksOptionsRequestDTO dto) {
+        Map<String, String> fieldToAlias = new LinkedHashMap<>();
+
+        // Select fields based on flags
+        if (dto.isIds()) {
+            fieldToAlias.put("t.id", "id");
+            fieldToAlias.put("t.name", "taskName"); // For label
+        }
+        if (dto.isRoomIds()) {
+            fieldToAlias.put("r.id", "roomId");
+            fieldToAlias.put("r.name", "roomName"); // For label
+        }
+        if (dto.isAssigneeIds()) {
+            fieldToAlias.put("a.id", "assigneeId");
+            fieldToAlias.put("a.username", "assigneeName"); // For label
+        }
+        if (dto.isStatuses()) {
+            fieldToAlias.put("t.status", "status");
+        }
+
+        if (fieldToAlias.isEmpty()) {
+            throw new IllegalArgumentException("At least one field must be selected.");
+        }
+        return fieldToAlias;
     }
 }

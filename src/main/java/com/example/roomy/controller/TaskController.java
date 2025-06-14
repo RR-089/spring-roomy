@@ -2,9 +2,7 @@ package com.example.roomy.controller;
 
 import com.example.roomy.dto.common.PaginationDTO;
 import com.example.roomy.dto.common.ResponseDTO;
-import com.example.roomy.dto.task.CreateTaskDTO;
-import com.example.roomy.dto.task.GetAllTasksRequestDTO;
-import com.example.roomy.dto.task.TaskDTO;
+import com.example.roomy.dto.task.*;
 import com.example.roomy.service.TaskService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -33,6 +31,22 @@ public class TaskController {
                 ResponseDTO.<PaginationDTO<List<TaskDTO>>>builder()
                            .status(HttpStatus.OK.value())
                            .message("Get all tasks successful")
+                           .data(data)
+                           .build()
+        );
+    }
+
+
+    @GetMapping(value = "/options")
+    public ResponseEntity<ResponseDTO<GetTasksOptionsResponseDTO>> getTasksOptions(
+            GetTasksOptionsRequestDTO dto
+    ) {
+        GetTasksOptionsResponseDTO data = taskService.getTasksOptions(dto);
+
+        return ResponseEntity.ok(
+                ResponseDTO.<GetTasksOptionsResponseDTO>builder()
+                           .status(HttpStatus.OK.value())
+                           .message("Get tasks options successful")
                            .data(data)
                            .build()
         );
