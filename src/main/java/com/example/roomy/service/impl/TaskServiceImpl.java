@@ -51,9 +51,15 @@ public class TaskServiceImpl implements TaskService {
                       .build();
     }
 
+    @Override
+    public Task findTaskEntity(Long id) {
+        log.info("req task: {}", id);
+        return taskRepository.findById(id).orElseThrow(() -> new NotFoundException(
+                "Task not found", null));
+    }
 
     @Override
-    public PaginationDTO<List<TaskDTO>> getAllTask(GetAllTasksRequestDTO dto, Pageable pageable) {
+    public PaginationDTO<List<TaskDTO>> findAllTask(GetAllTasksRequestDTO dto, Pageable pageable) {
         log.info("req get all tasks");
 
         Page<Task> taskPage = taskRepository.findAllTasks(
@@ -89,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public GetTasksOptionsResponseDTO getTasksOptions(GetTasksOptionsRequestDTO dto) {
+    public GetTasksOptionsResponseDTO findTasksOptions(GetTasksOptionsRequestDTO dto) {
         StringBuilder sb = new StringBuilder("select ");
         Map<String, String> fieldToAlias = getFieldToAlias(dto);
 

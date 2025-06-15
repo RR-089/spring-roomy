@@ -70,11 +70,7 @@ public class Task extends AbstractTimestamp {
     private Set<User> assignees = new HashSet<>();
 
     public void addTaskAssignee(User user) {
-        if (maxAssignee >= assignees.size()) {
-            throw new BadRequestException("Assignee capacity exceeds the maximum limit"
-                    , null);
-        }
-        
+
         if (finishedDate != null && status == TaskStatus.FINISHED) {
             throw new BadRequestException("Finished tasks cannot have new assignees",
                     null);

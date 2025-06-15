@@ -25,7 +25,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<PaginationDTO<List<TaskDTO>>>> getAllTasks(GetAllTasksRequestDTO dto, Pageable pageable) {
-        PaginationDTO<List<TaskDTO>> data = taskService.getAllTask(dto, pageable);
+        PaginationDTO<List<TaskDTO>> data = taskService.findAllTask(dto, pageable);
 
         return ResponseEntity.ok(
                 ResponseDTO.<PaginationDTO<List<TaskDTO>>>builder()
@@ -41,7 +41,7 @@ public class TaskController {
     public ResponseEntity<ResponseDTO<GetTasksOptionsResponseDTO>> getTasksOptions(
             GetTasksOptionsRequestDTO dto
     ) {
-        GetTasksOptionsResponseDTO data = taskService.getTasksOptions(dto);
+        GetTasksOptionsResponseDTO data = taskService.findTasksOptions(dto);
 
         return ResponseEntity.ok(
                 ResponseDTO.<GetTasksOptionsResponseDTO>builder()
