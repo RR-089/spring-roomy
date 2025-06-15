@@ -1,10 +1,12 @@
 package com.example.roomy.repository;
 
 import com.example.roomy.model.Room;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -34,6 +36,9 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                 and (:roomMasterIds is null or rm.id in :roomMasterIds)
                 and (:roomMemberIds is null or rms.id in :roomMemberIds)            
             """)
+    @QueryHints({
+            @QueryHint(name = "org.hibernate.readOnly", value = "true")
+    })
     Page<Room> findAllRooms(
             @Param("search") String search,
             @Param("ids") List<Long> ids,

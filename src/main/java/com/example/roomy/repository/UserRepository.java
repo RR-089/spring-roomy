@@ -1,10 +1,12 @@
 package com.example.roomy.repository;
 
 import com.example.roomy.model.User;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +30,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             and (:usernames is null or u.username in :usernames)
             and (:roles is null or r.name in :roles)
             """)
+    @QueryHints({
+            @QueryHint(name = "org.hibernate.readOnly", value = "true")
+    })
     Page<User> findAllUsers(
             @Param("search") String search,
             @Param("ids") List<Long> ids,

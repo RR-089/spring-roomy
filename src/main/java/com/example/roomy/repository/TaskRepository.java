@@ -1,10 +1,12 @@
 package com.example.roomy.repository;
 
 import com.example.roomy.model.Task;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -45,8 +47,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             and (coalesce(:maxFinishedDate, t.finishedDate) = t.finishedDate
                 or t.finishedDate <= :maxFinishedDate)
             """
-
     )
+    @QueryHints({
+            @QueryHint(name = "org.hibernate.readOnly", value = "true")
+    })
     Page<Task> findAllTasks(
             @Param("search") String search,
             @Param("ids") List<Long> ids,
