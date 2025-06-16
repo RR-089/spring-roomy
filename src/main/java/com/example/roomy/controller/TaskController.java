@@ -67,6 +67,23 @@ public class TaskController {
         );
     }
 
+    @PatchMapping(value = "{taskId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
+    public ResponseEntity<ResponseDTO<TaskDTO>> updateTask(
+            @PathVariable("taskId") Long taskId,
+            @Valid @RequestBody UpdateTaskDTO dto
+    ) {
+        TaskDTO data = taskService.updateTask(taskId, dto);
+
+        return ResponseEntity.ok(
+                ResponseDTO.<TaskDTO>builder()
+                           .status(HttpStatus.OK.value())
+                           .message("Update task successful")
+                           .data(data)
+                           .build()
+        );
+    }
+
     @DeleteMapping(value = "{taskId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<Object>> deleteTask(@PathVariable("taskId") Long taskId) {

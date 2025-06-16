@@ -187,6 +187,30 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public TaskDTO updateTask(Long taskId, UpdateTaskDTO dto) {
+        Task foundTask = this.findTaskEntity(taskId);
+
+        foundTask.setName(dto.getName());
+        foundTask.setDescription(dto.getDescription());
+
+        if (!Objects.equals(foundTask.getMaxAssignee(), dto.getMaxAssignee()) && foundTask.getStatus() == TaskStatus.FINISHED) {
+            throw new BadRequestException("Cannot update max assignees for a finished task", null);
+        }
+
+        if (!foundTask.getAssignees().isEmpty()) {
+            int currentAssigneesSize = foundTask.getAssignees().size();
+
+            if (dto.getMaxAssignee() < currentAssigneesSize) {
+                throw new BadRequestException("New limit is less than current assignees", null);
+            }
+        }
+
+        foundTask.setMaxAssignee(dto.getMaxAssignee());
+
+        return mapToDto(taskRepository.save(foundTask));
+    }
+
+    @Override
     public void deleteTask(Long taskId) {
         log.info("req to delete task: {}", taskId);
 
