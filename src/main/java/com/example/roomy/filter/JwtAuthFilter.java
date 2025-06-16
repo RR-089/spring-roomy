@@ -5,6 +5,7 @@ import com.example.roomy.exception.BadRequestException;
 import com.example.roomy.exception.CustomException;
 import com.example.roomy.exception.UnauthorizedException;
 import com.example.roomy.util.JwtUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -70,7 +71,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authToken);
 
         } catch (Exception ex) {
-            throw new UnauthorizedException("Invalid token", null);
+            handleCustomException(
+                    new UnauthorizedException("Invalid token", null),
+                    response
+            );
         }
 
         filterChain.doFilter(request, response);
@@ -87,20 +91,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 throw new BadRequestException("Only accepted Bearer token auth", null);
             }
         } catch (CustomException ex) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-            String json = new ObjectMapper().writeValueAsString(
-                    ResponseDTO.builder()
-                               .status(HttpStatus.UNAUTHORIZED.value())
-                               .message(ex.getMessage())
-                               .data(ex.getData())
-                               .build()
-            );
-
-            response.getWriter().write(json);
-            response.getWriter().flush();
+            handleCustomException(ex, response);
         }
+    }
 
+    private void handleCustomException(CustomException ex,
+                                       HttpServletResponse response) throws JsonProcessingException, IOException {
+        response.setStatus(ex.getStatus().value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        String json = new ObjectMapper().writeValueAsString(
+                ResponseDTO.builder()
+                           .status(HttpStatus.UNAUTHORIZED.value())
+                           .message(ex.getMessage())
+                           .data(ex.getData())
+                           .build()
+        );
+
+        response.getWriter().write(json);
+        response.getWriter().flush();
     }
 }
