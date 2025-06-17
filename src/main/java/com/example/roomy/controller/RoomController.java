@@ -5,6 +5,7 @@ import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.dto.room.*;
 import com.example.roomy.service.RoomService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/rooms")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Rooms")
 public class RoomController {
     private final RoomService roomService;
 

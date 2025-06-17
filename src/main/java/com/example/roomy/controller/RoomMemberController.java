@@ -5,6 +5,7 @@ import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.dto.room.AddRemoveRoomMembersDTO;
 import com.example.roomy.service.RoomMemberService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/rooms/{roomId}/members")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Room Members")
 public class RoomMemberController {
     private final RoomMemberService roomMemberService;
 

@@ -5,6 +5,7 @@ import com.example.roomy.dto.task.AddRemoveTaskAssigneesDTO;
 import com.example.roomy.dto.task.TaskDTO;
 import com.example.roomy.service.TaskAssigneeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/tasks/{taskId}/assignees")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Task Assignees")
 @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
 public class TaskAssigneeController {
     private final TaskAssigneeService taskAssigneeService;

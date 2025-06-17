@@ -2,6 +2,7 @@ package com.example.roomy.controller;
 
 import com.example.roomy.dto.common.ResponseDTO;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/protected")
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Protected", description = "Just example of protected route")
 public class ProtectedController {
 
     @GetMapping

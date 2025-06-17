@@ -1,6 +1,7 @@
 package com.example.roomy.controller;
 
 import com.example.roomy.util.SseManagerUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 @RequestMapping("/sse")
 @RequiredArgsConstructor
+@Tag(name = "SSE")
 public class SseController {
     private final SseManagerUtil sseManagerUtil;
 

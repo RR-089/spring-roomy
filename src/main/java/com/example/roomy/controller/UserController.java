@@ -8,6 +8,7 @@ import com.example.roomy.dto.user.GetUsersRequestDTO;
 import com.example.roomy.dto.user.UserDTO;
 import com.example.roomy.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Users")
 public class UserController {
     private final UserService userService;
 

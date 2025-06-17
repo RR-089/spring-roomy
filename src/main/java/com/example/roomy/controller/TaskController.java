@@ -5,6 +5,7 @@ import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.dto.task.*;
 import com.example.roomy.service.TaskService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/tasks")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Tasks")
 public class TaskController {
     private final TaskService taskService;
 

@@ -5,6 +5,7 @@ import com.example.roomy.dto.auth.RegisterRequestDTO;
 import com.example.roomy.dto.auth.TokenResponseDTO;
 import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Auth")
 public class AuthController {
     private final AuthService authService;
 

@@ -5,6 +5,7 @@ import com.example.roomy.dto.room.AddReplaceRoomLeaderDTO;
 import com.example.roomy.dto.room.RoomDTO;
 import com.example.roomy.service.RoomLeaderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/rooms/{roomId}/leaders")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Room Leaders")
 @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
 public class RoomLeaderController {
     private final RoomLeaderService roomLeaderService;

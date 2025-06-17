@@ -4,6 +4,7 @@ import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.dto.userrole.AddUserRoleRequestDTO;
 import com.example.roomy.service.UserRoleService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "User Roles")
 public class UserRoleController {
     private final UserRoleService userRoleService;
 
