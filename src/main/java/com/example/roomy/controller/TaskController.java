@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,9 @@ public class TaskController {
 
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<PaginationDTO<List<TaskDTO>>>> getAllTasks(GetAllTasksRequestDTO dto, Pageable pageable) {
+    public ResponseEntity<ResponseDTO<PaginationDTO<List<TaskDTO>>>> getAllTasks(
+            @ParameterObject GetAllTasksRequestDTO dto,
+            @ParameterObject Pageable pageable) {
         PaginationDTO<List<TaskDTO>> data = taskService.findAllTask(dto, pageable);
 
         return ResponseEntity.ok(
