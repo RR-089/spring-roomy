@@ -44,7 +44,7 @@ public class TaskController {
 
     @GetMapping(value = "/options")
     public ResponseEntity<ResponseDTO<GetTasksOptionsResponseDTO>> getTasksOptions(
-            GetTasksOptionsRequestDTO dto
+            @ParameterObject GetTasksOptionsRequestDTO dto
     ) {
         GetTasksOptionsResponseDTO data = taskService.findTasksOptions(dto);
 
