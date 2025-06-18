@@ -15,22 +15,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -53,15 +50,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         try {
             String username = jwtUtil.extractUsername(token);
-            List<String> roles = jwtUtil.extractRoles(token);
-            List<GrantedAuthority> authorities = roles.stream()
-                                                      .map((role) -> new SimpleGrantedAuthority("ROLE_" + role))
-                                                      .collect(Collectors.toList());
-            UserDetails userDetails = User.builder()
-                                          .username(username)
-                                          .password("")
-                                          .authorities(authorities)
-                                          .build();
+
+            UserDetails userDetails =
+                    userDetailsService.loadUserByUsername(username);
+
+            // Old: Roles in token
+            //List<String> roles = jwtUtil.extractRoles(token);
+            //List<GrantedAuthority> authorities = roles.stream()
+            //                                          .map((role) -> new SimpleGrantedAuthority("ROLE_" + role))
+            //                                          .collect(Collectors.toList());
+            //UserDetails userDetails = User.builder()
+            //                              .username(username)
+            //                              .password("")
+            //                              .authorities(authorities)
+            //                              .build();
 
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(userDetails, null,
