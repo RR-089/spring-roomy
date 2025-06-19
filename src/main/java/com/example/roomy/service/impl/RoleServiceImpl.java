@@ -1,5 +1,6 @@
 package com.example.roomy.service.impl;
 
+import com.example.roomy.exception.BadRequestException;
 import com.example.roomy.exception.NotFoundException;
 import com.example.roomy.model.Role;
 import com.example.roomy.repository.RoleRepository;
@@ -64,21 +65,31 @@ public class RoleServiceImpl implements RoleService {
     public void deleteById(Long id) {
         log.info("req to delete role with id: {}", id);
 
-        if (!roleRepository.existsById(id)) {
-            throw new NotFoundException("Role not found", null);
-        }
+        Role foundRole = roleRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Role not found", null)
+        );
 
-        roleRepository.deleteById(id);
+        validateDeleteRole(foundRole);
+
+        roleRepository.delete(foundRole);
     }
 
     @Override
     public void deleteByName(String name) {
         log.info("req to delete role with name: {}", name);
 
-        if (!roleRepository.existsByName(name)) {
-            throw new NotFoundException("Role not found", null);
-        }
+        Role foundRole = roleRepository.findByName(name).orElseThrow(() ->
+                new NotFoundException("Role not found", null)
+        );
 
-        roleRepository.deleteByName(name);
+        validateDeleteRole(foundRole);
+
+        roleRepository.delete(foundRole);
+    }
+
+    private void validateDeleteRole(Role role) {
+        if (!role.getUsers().isEmpty()) {
+            throw new BadRequestException("Cannot delete role assigned to users", null);
+        }
     }
 }
