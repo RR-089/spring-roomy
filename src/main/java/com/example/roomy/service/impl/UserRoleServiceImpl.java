@@ -34,4 +34,22 @@ public class UserRoleServiceImpl implements UserRoleService {
 
         userRepository.save(foundUser);
     }
+
+    @Override
+    public void removeUserRole(Long userId, String roleName) {
+        log.info("Remove role: {}, from userId: {}", roleName, userId);
+
+        Role foundRole = roleRepository.findByName(roleName).orElseThrow(
+                () -> new NotFoundException("Role not found", null)
+        );
+
+        User foundUser = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("User not found", null)
+        );
+
+        foundUser.removeRole(foundRole);
+
+        userRepository.save(foundUser);
+    }
+
 }

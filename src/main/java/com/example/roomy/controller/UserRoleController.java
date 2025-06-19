@@ -1,7 +1,7 @@
 package com.example.roomy.controller;
 
 import com.example.roomy.dto.common.ResponseDTO;
-import com.example.roomy.dto.userrole.AddUserRoleRequestDTO;
+import com.example.roomy.dto.userrole.AddRemoveUserRoleRequestDTO;
 import com.example.roomy.service.UserRoleService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +23,7 @@ public class UserRoleController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO<Object>> addUserRole(@PathVariable("userId") Long userId,
-                                                           @Valid @RequestBody AddUserRoleRequestDTO dto
+                                                           @Valid @RequestBody AddRemoveUserRoleRequestDTO dto
     ) {
         userRoleService.addUserRole(userId, dto.getName());
 
@@ -33,6 +33,22 @@ public class UserRoleController {
                 ResponseDTO.builder()
                            .status(status.value())
                            .message("Add role to user successful")
+                           .data(null)
+                           .build()
+        );
+
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ResponseDTO<Object>> removeUserRole(@PathVariable("userId") Long userId,
+                                                              @Valid @RequestBody AddRemoveUserRoleRequestDTO dto
+    ) {
+        userRoleService.removeUserRole(userId, dto.getName());
+
+        return ResponseEntity.ok(
+                ResponseDTO.builder()
+                           .status(HttpStatus.OK.value())
+                           .message("Remove role from user successful")
                            .data(null)
                            .build()
         );

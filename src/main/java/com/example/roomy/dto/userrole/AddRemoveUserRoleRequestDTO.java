@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
-public class AddUserRoleRequestDTO {
+public class AddRemoveUserRoleRequestDTO {
     @NotBlank
     private String name;
 }
