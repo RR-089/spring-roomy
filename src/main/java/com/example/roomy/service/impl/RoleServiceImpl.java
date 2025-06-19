@@ -1,5 +1,6 @@
 package com.example.roomy.service.impl;
 
+import com.example.roomy.dto.role.RoleDTO;
 import com.example.roomy.exception.BadRequestException;
 import com.example.roomy.exception.NotFoundException;
 import com.example.roomy.model.Role;
@@ -10,12 +11,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
+
+    public static RoleDTO mapToDTO(Role role) {
+        return RoleDTO.builder()
+                      .id(role.getId())
+                      .name(role.getName())
+                      .users(role.getUsers()
+                                 .stream()
+                                 .map(UserServiceImpl::mapToInfoDTO)
+                                 .collect(Collectors.toSet())
+                      )
+                      .build();
+    }
 
     @Override
     public Role findDefaultRole() {
@@ -27,10 +41,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> findAllRoles() {
+    public List<RoleDTO> findAllRoles() {
         log.info("req find all roles");
 
-        return roleRepository.findAll();
+        return roleRepository.findAll()
+                             .stream()
+                             .map(RoleServiceImpl::mapToDTO)
+                             .toList();
     }
 
     @Override

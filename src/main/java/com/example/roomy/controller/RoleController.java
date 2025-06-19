@@ -2,6 +2,7 @@ package com.example.roomy.controller;
 
 import com.example.roomy.dto.common.ResponseDTO;
 import com.example.roomy.dto.role.CreateRoleRequestDTO;
+import com.example.roomy.dto.role.RoleDTO;
 import com.example.roomy.model.Role;
 import com.example.roomy.service.RoleService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/roles")
 @RequiredArgsConstructor
@@ -21,6 +24,19 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Roles")
 public class RoleController {
     private final RoleService roleService;
+
+    @GetMapping
+    public ResponseEntity<ResponseDTO<List<RoleDTO>>> getRoles() {
+        List<RoleDTO> data = roleService.findAllRoles();
+
+        return ResponseEntity.ok(
+                ResponseDTO.<List<RoleDTO>>builder()
+                           .status(HttpStatus.OK.value())
+                           .message("Get roles successful")
+                           .data(data)
+                           .build()
+        );
+    }
 
     @PostMapping
     public ResponseEntity<ResponseDTO<Role>> createRole(@Valid @RequestBody CreateRoleRequestDTO dto) {
