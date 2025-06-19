@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/roles")
@@ -38,6 +35,21 @@ public class RoleController {
                            .data(data)
                            .build()
         );
-
     }
+
+    @DeleteMapping(value = "{roleId}")
+    public ResponseEntity<ResponseDTO<Object>> deleteRole(
+            @PathVariable("roleId") Long roleId
+    ) {
+        roleService.deleteById(roleId);
+        return ResponseEntity.ok(
+                ResponseDTO.builder()
+                           .status(HttpStatus.OK.value())
+                           .message("Delete role successful")
+                           .data(null)
+                           .build()
+        );
+    }
+
+
 }
