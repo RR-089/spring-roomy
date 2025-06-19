@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,9 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<PaginationDTO<List<RoomDTO>>>> getAllRooms(GetRoomsRequestDTO dto, Pageable pageable) {
+    public ResponseEntity<ResponseDTO<PaginationDTO<List<RoomDTO>>>> getAllRooms(
+            @ParameterObject GetRoomsRequestDTO dto,
+            @ParameterObject Pageable pageable) {
         PaginationDTO<List<RoomDTO>> data = roomService.findAllRooms(dto, pageable);
 
         return ResponseEntity.ok(
@@ -38,7 +41,9 @@ public class RoomController {
     }
 
     @GetMapping(value = "/options")
-    public ResponseEntity<ResponseDTO<GetRoomsOptionsResponseDTO>> getRoomsOptions(GetRoomsOptionsRequestDTO dto) {
+    public ResponseEntity<ResponseDTO<GetRoomsOptionsResponseDTO>> getRoomsOptions(
+            @ParameterObject GetRoomsOptionsRequestDTO dto
+    ) {
         GetRoomsOptionsResponseDTO data = roomService.findRoomsOptions(dto);
 
         return ResponseEntity.ok(

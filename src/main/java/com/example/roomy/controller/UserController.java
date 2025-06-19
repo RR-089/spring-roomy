@@ -10,6 +10,7 @@ import com.example.roomy.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<PaginationDTO<List<UserDTO>>>> getAllUsers(GetUsersRequestDTO dto, Pageable pageable) {
+    public ResponseEntity<ResponseDTO<PaginationDTO<List<UserDTO>>>> getAllUsers(
+            @ParameterObject GetUsersRequestDTO dto,
+            @ParameterObject Pageable pageable) {
 
         PaginationDTO<List<UserDTO>> data = userService.findAllUsers(dto, pageable);
 
@@ -44,7 +47,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/options")
-    public ResponseEntity<ResponseDTO<GetUsersOptionsResponseDTO>> getAllUsersOptions(GetUsersOptionsRequestDTO dto) {
+    public ResponseEntity<ResponseDTO<GetUsersOptionsResponseDTO>> getAllUsersOptions(
+            @ParameterObject GetUsersOptionsRequestDTO dto) {
         GetUsersOptionsResponseDTO data = userService.findUsersOptions(dto);
 
         return ResponseEntity.ok(
