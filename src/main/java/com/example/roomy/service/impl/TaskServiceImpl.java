@@ -211,6 +211,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public TaskDTO updateTaskDuration(Long taskId, Long duration) {
+        Task foundTask = findTaskEntity(taskId);
+
+        foundTask.setDurationInMinutes(duration);
+
+        return mapToDto(taskRepository.save(foundTask));
+    }
+
+    @Override
     public void deleteTask(Long taskId) {
         log.info("req to delete task: {}", taskId);
 
