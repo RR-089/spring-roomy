@@ -106,6 +106,23 @@ public class TaskController {
         );
     }
 
+    @PatchMapping(value = "{taskId}/status")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
+    public ResponseEntity<ResponseDTO<TaskDTO>> updateTaskStatus(
+            @PathVariable("taskId") Long taskId,
+            @Valid @RequestBody UpdateTaskStatusRequestDTO dto
+    ) {
+        TaskDTO data = taskService.updateTaskStatus(taskId, dto.getNextStatus());
+
+        return ResponseEntity.ok(
+                ResponseDTO.<TaskDTO>builder()
+                           .status(HttpStatus.OK.value())
+                           .message("Update task status successful")
+                           .data(data)
+                           .build()
+        );
+    }
+
     @DeleteMapping(value = "{taskId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ROOM_MASTER')")
     public ResponseEntity<ResponseDTO<Object>> deleteTask(@PathVariable("taskId") Long taskId) {

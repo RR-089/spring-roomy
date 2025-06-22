@@ -44,11 +44,14 @@ public class Task extends AbstractTimestamp {
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
-    @Column(name = "expected_finished_date")
-    private LocalDateTime expectedFinishedDate;
-
     @Column(name = "finished_date")
     private LocalDateTime finishedDate;
+
+    @Column(name = "expected_start_date")
+    private LocalDateTime expectedStartDate;
+
+    @Column(name = "expected_finished_date")
+    private LocalDateTime expectedFinishedDate;
 
     @ManyToOne
     @JoinColumn(

@@ -21,5 +21,7 @@ public interface TaskService {
 
     TaskDTO updateTaskDuration(Long taskId, Long duration);
 
+    TaskDTO updateTaskStatus(Long taskId, String status);
+
     void deleteTask(Long taskId);
 }

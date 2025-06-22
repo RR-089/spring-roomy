@@ -69,4 +69,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             @Param("maxFinishedDate") LocalDateTime maxFinishedDate,
             Pageable pageable
     );
+
+    @Query("""
+            select max(t.expectedFinishedDate) from Task t
+            join t.assignees a where a.id = :memberId
+            """)
+    LocalDateTime findMaxExpectedFinishedDateTask(@Param("memberId") Long memberId);
 }

@@ -25,6 +25,8 @@ public class TaskDTO {
 
     private LocalDateTime startDate;
 
+    private LocalDateTime expectedStartDate;
+
     private LocalDateTime expectedFinishedDate;
 
     private LocalDateTime finishedDate;
