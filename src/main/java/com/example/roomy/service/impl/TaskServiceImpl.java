@@ -227,9 +227,13 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public TaskDTO updateTaskStatus(Long taskId, String status) {
+
         TaskStatus nexStatus = TaskStatus.fromValue(status);
 
         Task foundTask = findTaskEntity(taskId);
+
+        log.info("Update task status from: {}, to: {}", foundTask.getStatus(),
+                nexStatus.getValue());
 
         validateTaskUpdateNextStatus(foundTask, nexStatus);
 
