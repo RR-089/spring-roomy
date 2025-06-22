@@ -1,25 +1,45 @@
 package com.example.roomy.util;
 
+import com.example.roomy.dto.calendar.HolidayDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.List;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class DateTimeUtil {
-    private static final List<Interval> DAILY_INTERVALS = List.of(
+    private final List<Interval> DAILY_INTERVALS = List.of(
             new Interval(LocalTime.of(1, 30), LocalTime.of(5, 0)),
             new Interval(LocalTime.of(6, 0), LocalTime.of(10, 30))
     );
 
-    public static LocalDateTime calculateExpectedDate(LocalDateTime startDate, long durationInMinutes) {
+    private final CalendarUtil calendarUtil;
+
+    public LocalDateTime calculateExpectedDate(LocalDateTime startDate, long durationInMinutes) {
+        log.info("Calculating expected date...");
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate lastDateOfYear = Year.now().atDay(Year.now().length());
+
         long remainingMillis = durationInMinutes * 60 * 1000;
         LocalDateTime current = alignToValidTime(startDate);
 
+        Mono<List<HolidayDTO>> holidayDates =
+                this.calendarUtil.getHolidays(currentDate, lastDateOfYear);
+
         while (remainingMillis > 0) {
+
+            if (isHoliday(LocalDate.from(current), holidayDates)) {
+                current = nextValidStart(current);
+                continue;
+            }
+
             if (isWeekend(current)) {
                 current = nextWeekdayStart(current);
                 continue;
@@ -57,24 +77,33 @@ public class DateTimeUtil {
         return current;
     }
 
-    private static boolean isWeekend(LocalDateTime dateTime) {
+    private boolean isWeekend(LocalDateTime dateTime) {
         DayOfWeek day = dateTime.getDayOfWeek();
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
 
-    private static LocalDateTime nextWeekdayStart(LocalDateTime dateTime) {
+    private boolean isHoliday(LocalDate date, Mono<List<HolidayDTO>> holidayMono) {
+        return Boolean.TRUE.equals(holidayMono
+                .flatMapMany(Flux::fromIterable)
+                .filter(holiday -> holiday.getDate().equals(date))
+                .hasElements()
+                .block());
+    }
+
+
+    private LocalDateTime nextWeekdayStart(LocalDateTime dateTime) {
         while (isWeekend(dateTime)) {
             dateTime = dateTime.plusDays(1).with(LocalTime.MIDNIGHT);
         }
         return dateTime.with(DAILY_INTERVALS.get(0).start);
     }
 
-    private static LocalDateTime nextValidStart(LocalDateTime dateTime) {
+    private LocalDateTime nextValidStart(LocalDateTime dateTime) {
         LocalDateTime nextDay = dateTime.plusDays(1).with(LocalTime.MIDNIGHT);
         return nextWeekdayStart(nextDay);
     }
 
-    private static LocalDateTime alignToValidTime(LocalDateTime dateTime) {
+    private LocalDateTime alignToValidTime(LocalDateTime dateTime) {
         if (isWeekend(dateTime)) {
             return nextWeekdayStart(dateTime);
         }

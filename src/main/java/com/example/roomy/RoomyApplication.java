@@ -8,7 +8,6 @@ public class RoomyApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(RoomyApplication.class, args);
-
     }
 
 }
