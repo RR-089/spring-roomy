@@ -1,5 +1,6 @@
 package com.example.roomy.service.impl;
 
+import com.example.roomy.exception.BadRequestException;
 import com.example.roomy.exception.NotFoundException;
 import com.example.roomy.model.Role;
 import com.example.roomy.model.User;
@@ -46,6 +47,16 @@ public class UserRoleServiceImpl implements UserRoleService {
         User foundUser = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found", null)
         );
+
+        boolean isUserHasFoundRole = foundUser.getRoles().stream()
+                                              .anyMatch(userRole -> userRole.equals(foundRole));
+
+        if (!isUserHasFoundRole) {
+            throw new BadRequestException(
+                    String.format("User does not have the role: %s", foundRole.getName()),
+                    null
+            );
+        }
 
         foundUser.removeRole(foundRole);
 
