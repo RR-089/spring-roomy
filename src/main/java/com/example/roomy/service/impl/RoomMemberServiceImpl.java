@@ -1,5 +1,6 @@
 package com.example.roomy.service.impl;
 
+import com.example.roomy.exception.BadRequestException;
 import com.example.roomy.exception.NotFoundException;
 import com.example.roomy.model.Room;
 import com.example.roomy.model.User;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,18 @@ public class RoomMemberServiceImpl implements RoomMemberService {
         Room foundRoom = roomRepository.findById(roomId).orElseThrow(
                 () -> new NotFoundException("Room not found", null)
         );
+
+        Set<Long> memberIds =
+                foundRoom.getRoomMembers().
+                         stream()
+                         .map(User::getId)
+                         .filter(userIds::contains)
+                         .collect(Collectors.toSet());
+
+        if (!memberIds.isEmpty()) {
+            throw new BadRequestException("Some users are already added to the room",
+                    null);
+        }
 
         List<User> users = userService.findUsersByIds(userIds);
 
@@ -44,6 +59,18 @@ public class RoomMemberServiceImpl implements RoomMemberService {
         Room foundRoom = roomRepository.findById(roomId).orElseThrow(
                 () -> new NotFoundException("Room not found", null)
         );
+
+        Set<Long> memberIds =
+                foundRoom.getRoomMembers().
+                         stream()
+                         .map(User::getId)
+                         .filter(userIds::contains)
+                         .collect(Collectors.toSet());
+
+        if (memberIds.size() != userIds.size()) {
+            throw new BadRequestException("Some members dont exist in the room",
+                    null);
+        }
 
         List<User> users = userService.findUsersByIds(userIds);
 
