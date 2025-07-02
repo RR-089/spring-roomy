@@ -20,10 +20,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             select t from Task t
             join fetch t.room r
             left join fetch t.assignees a
-            where (:search is null or t.name
-                ilike concat('%', cast(:search as string), '%'))
-            or (:search is null or r.name
-                ilike concat('%', cast(:search as string), '%'))
+            where (
+                :search is null or (
+                    t.name ilike concat('%', cast(:search as string), '%')
+                    or r.name ilike concat('%', cast(:search as string), '%')
+                )
+            )
             and (:ids is null or t.id in :ids)
             and (:roomIds is null or r.id in :roomIds)
             and (:assigneeIds is null or a.id in :assigneeIds)
