@@ -19,22 +19,23 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     boolean existsByName(String name);
 
-
     @Query("""
-            select r from Room r
-            left join fetch r.roomMaster rm
-            left join fetch r.roomMembers rms
-            where (:search is null or r.name ilike 
-                    concat('%', cast(:search as string), '%'))
-                or (:search is null or rm.username ilike
-                    concat('%', cast(:search as string), '%'))
-                or (:search is null or rms.username ilike
-                    concat('%', cast(:search as string), '%'))
-                and (:ids is null or r.id in :ids)
-                and (:names is null or r.name in :names)
-                and (:statuses is null or r.status in :statuses)
-                and (:roomMasterIds is null or rm.id in :roomMasterIds)
-                and (:roomMemberIds is null or rms.id in :roomMemberIds)            
+             select r from Room r
+             left join fetch r.roomMaster rm
+             left join fetch r.roomMembers rms
+             where (
+                     :search is null or (
+                         r.name ilike concat('%', cast(:search as string), '%')
+                         or rm.username ilike concat('%', cast(:search as string), '%')
+                         or rms.username ilike concat('%', cast(:search as string), '%')
+                     )
+                 )
+                 and (:ids is null or r.id in :ids)
+                 and (:names is null or r.name in :names)
+                 and (:statuses is null or r.status in :statuses)
+                 and (:roomMasterIds is null or rm.id in :roomMasterIds)
+                 and (:roomMemberIds is null or rms.id in :roomMemberIds)
+                 and (:username is null or rms.username = cast(:username as string))
             """)
     @QueryHints({
             @QueryHint(name = "org.hibernate.readOnly", value = "true")
@@ -46,6 +47,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("statuses") List<String> statuses,
             @Param("roomMasterIds") List<Long> roomMasterIds,
             @Param("roomMemberIds") List<Long> roomMemberIds,
+            @Param("username") String username,
             Pageable pageable
     );
+
 }

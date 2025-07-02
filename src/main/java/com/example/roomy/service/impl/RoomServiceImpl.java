@@ -1,5 +1,6 @@
 package com.example.roomy.service.impl;
 
+import com.example.roomy.constant.RoleConstant;
 import com.example.roomy.dto.common.OptionDTO;
 import com.example.roomy.dto.common.PaginationDTO;
 import com.example.roomy.dto.room.*;
@@ -16,11 +17,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,6 +70,17 @@ public class RoomServiceImpl implements RoomService {
                                                      Pageable pageable) {
         log.info("req all rooms data");
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = auth.getName();
+        Set<String> roles = auth.getAuthorities()
+                                .stream().map(Object::toString).collect(Collectors.toSet());
+
+        boolean isFullRead = roles.stream()
+                                  .anyMatch(role -> RoleConstant.NO_READ_RESTRICTIONS
+                                          .stream()
+                                          .anyMatch(role::contains));
+
         Page<Room> roomPage = roomRepository.findAllRooms(
                 dto.getSearch(),
                 dto.getIds(),
@@ -73,6 +88,7 @@ public class RoomServiceImpl implements RoomService {
                 dto.getStatuses(),
                 dto.getRoomMasterIds(),
                 dto.getRoomMemberIds(),
+                isFullRead ? null : username,
                 pageable
         );
 
