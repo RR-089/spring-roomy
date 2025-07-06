@@ -10,6 +10,7 @@ import com.example.roomy.exception.NotFoundException;
 import com.example.roomy.model.Room;
 import com.example.roomy.model.User;
 import com.example.roomy.repository.RoomRepository;
+import com.example.roomy.repository.specification.RoomSpecification;
 import com.example.roomy.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -102,6 +104,49 @@ public class RoomServiceImpl implements RoomService {
                             .data(roomDTOS)
                             .build();
 
+    }
+
+    @Override
+    public PaginationDTO<List<RoomDTO>> findAllRoomsSpecVersion(GetRoomsRequestDTO dto, Pageable pageable) {
+        log.info("req all rooms data spec version");
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = auth.getName();
+        Set<String> roles = auth.getAuthorities()
+                                .stream().map(Object::toString).collect(Collectors.toSet());
+
+        boolean isFullRead = roles.stream()
+                                  .anyMatch(role -> RoleConstant.NO_READ_RESTRICTIONS
+                                          .stream()
+                                          .anyMatch(role::contains));
+
+        Specification<Room> spec =
+                (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+
+        spec = spec.and(RoomSpecification.search(dto.getSearch()));
+        spec = spec.and(RoomSpecification.withIds(dto.getIds()));
+        spec = spec.and(RoomSpecification.withNames(dto.getNames()));
+        spec = spec.and(RoomSpecification.withStatuses(dto.getStatuses()));
+        spec = spec.and(RoomSpecification.withMasterIds(dto.getRoomMasterIds()));
+        spec = spec.and(RoomSpecification.withMemberIds(dto.getRoomMemberIds()));
+
+        if (!isFullRead) {
+            spec = spec.and(RoomSpecification.withMemberUsername(username));
+        }
+
+        Page<Room> roomPage = roomRepository.findAll(spec, pageable);
+
+        List<RoomDTO> roomDTOS = roomPage.getContent()
+                                         .stream()
+                                         .map(RoomServiceImpl::mapToDTO)
+                                         .toList();
+
+        return PaginationDTO.<List<RoomDTO>>builder()
+                            .totalPages(roomPage.getTotalPages())
+                            .totalRecords(roomPage.getTotalElements())
+                            .data(roomDTOS)
+                            .build();
     }
 
     @Override

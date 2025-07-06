@@ -27,9 +27,11 @@ public class RoomController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<PaginationDTO<List<RoomDTO>>>> getAllRooms(
+            @RequestParam(value = "type", required = false) String type,
             @ParameterObject GetRoomsRequestDTO dto,
             @ParameterObject Pageable pageable) {
-        PaginationDTO<List<RoomDTO>> data = roomService.findAllRooms(dto, pageable);
+        PaginationDTO<List<RoomDTO>> data = type != null && type.equals("spec") ?
+                roomService.findAllRoomsSpecVersion(dto, pageable) : roomService.findAllRooms(dto, pageable);
 
         return ResponseEntity.ok(
                 ResponseDTO.<PaginationDTO<List<RoomDTO>>>builder()

@@ -10,6 +10,8 @@ import java.util.List;
 public interface RoomService {
     PaginationDTO<List<RoomDTO>> findAllRooms(GetRoomsRequestDTO dto, Pageable pageable);
 
+    PaginationDTO<List<RoomDTO>> findAllRoomsSpecVersion(GetRoomsRequestDTO dto, Pageable pageable);
+
     GetRoomsOptionsResponseDTO findRoomsOptions(GetRoomsOptionsRequestDTO dto);
 
     Room findEntityById(Long roomId);
