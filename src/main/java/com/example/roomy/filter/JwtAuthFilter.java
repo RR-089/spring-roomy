@@ -77,6 +77,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     new UnauthorizedException("Invalid token", null),
                     response
             );
+
+            return;
         }
 
         filterChain.doFilter(request, response);
